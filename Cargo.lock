@@ -46,10 +46,7 @@ dependencies = [
 [[package]]
 name = "ecflash"
 version = "0.1.0"
-source = "git+https://github.com/system76/ecflash.git#360527eaa6e77c2a9e11f92765cb865ef03b0aa4"
-dependencies = [
- "x86 0.7.2 (registry+https://github.com/rust-lang/crates.io-index)",
-]
+source = "git+https://github.com/system76/ecflash.git#73f78e2a629d291a2dfc089b4fca88e4c9aed5f1"
 
 [[package]]
 name = "libc"

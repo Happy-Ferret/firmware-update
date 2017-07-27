@@ -35,6 +35,7 @@ build/efi.img: build/iso/efi/boot/bootx64.efi res/*
 	mkfs.vfat $@.tmp
 	mcopy -i $@.tmp -s build/iso/efi ::
 	mmd -i $@.tmp system76-firmware-update
+	mcopy -i $@.tmp -s firmware ::system76-firmware-update
 	mcopy -i $@.tmp -s res ::system76-firmware-update
 	mv $@.tmp $@
 
@@ -44,6 +45,9 @@ build/boot.iso: build/iso/efi/boot/bootx64.efi
 build/iso/efi/boot/bootx64.efi: build/boot.efi
 	mkdir -p `dirname $@`
 	cp $< $@
+
+build/boot.list: build/boot.efi
+	objdump -M intel -S $< > $@
 
 build/boot.efi: build/boot.o $(LD)
 	$(LD) \
@@ -71,7 +75,7 @@ build/boot.o: build/boot.a
 	cd build/boot && ar x ../boot.a
 	ld -r build/boot/*.o -o $@
 
-build/boot.a: Cargo.toml src/* src/*/*
+build/boot.a: Cargo.lock Cargo.toml src/* src/*/*
 	mkdir -p build
 	$(CARGO) rustc --lib $(CARGOFLAGS) -C lto --emit link=$@
 

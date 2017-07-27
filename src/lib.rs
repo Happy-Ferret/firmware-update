@@ -2,6 +2,7 @@
 #![feature(alloc)]
 #![feature(asm)]
 #![feature(compiler_builtins_lib)]
+#![feature(concat_idents)]
 #![feature(const_fn)]
 #![feature(global_allocator)]
 #![feature(lang_items)]
@@ -53,9 +54,11 @@ fn main() {
 
     let _ = (uefi.ConsoleOut.SetAttribute)(uefi.ConsoleOut, 0x0F);
 
+    /*
     if let Err(err) = cmd::flash::main() {
         println!("Flashing error: {:?}", err);
     }
+    */
 
     if let Err(err) = pipe(cmd::menu) {
         println!("{:?}", err);

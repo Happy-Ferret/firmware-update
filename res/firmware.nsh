@@ -66,27 +66,5 @@ if "%1" == "bios" then
     exit 1
 endif
 
-if "%1" == "ec" then
-    if "%2" == "flash" then
-        echo "Flashing EC"
-        uecflash.efi ec.rom /AD /F2 /P
-        exit %lasterror%
-    endif
-
-    echo "ec: unknown subcommand '%2'"
-    exit 1
-endif
-
-if "%1" == "ec2" then
-    if "%2" == "flash" then
-        echo "Flashing EC2"
-        uecflash.efi ec2.rom /AD /O2 /P
-        exit %lasterror%
-    endif
-
-    echo "ec2: unknown subcommand '%2'"
-    exit 1
-endif
-
 echo "unknown command '%1'"
 exit 1
