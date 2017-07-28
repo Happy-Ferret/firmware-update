@@ -83,7 +83,7 @@ impl<'a> EcFlasher<'a> {
                 print!("*");
             }
 
-            println!("");
+            println!(" Done");
         }
 
         Ok(())
@@ -108,7 +108,7 @@ impl<'a> EcFlasher<'a> {
             print!("*");
         }
 
-        println!("");
+        println!(" Done");
 
         Ok(())
     }
@@ -116,37 +116,55 @@ impl<'a> EcFlasher<'a> {
     pub unsafe fn write(&mut self, data: &[u8]) -> Result<(), ()> {
         println!("Write {} KB", self.size/1024);
 
-        let mut bytes = data.iter();
-
         let ec = &mut self.ec;
-        for i in 0..self.size/65536 {
-            ec.cmd(0x02)?;
-            ec.cmd(0x00)?;
-            ec.cmd(i as u8)?;
-            /*
-            if i == 0 {
-                ec.cmd(0x04)?;
-            } else {
+
+        {
+            let mut bytes = data.iter();
+
+            for i in 0..self.size/65536 {
+                ec.cmd(0x02)?;
                 ec.cmd(0x00)?;
-            }
-            */
-            ec.cmd(0x00)?;
-            ec.cmd(0x00)?;
-
-            print!("Block {}: ", i);
-
-            for _j in 0..64 {
-                for _k in 0..1024 {
-                    if let Some(b) = bytes.next() {
-                        ec.write(*b)?;
-                    } else {
-                        ec.write(0xFF)?;
-                    }
+                ec.cmd(i as u8)?;
+                if i == 0 {
+                    ec.cmd(0x04)?;
+                } else {
+                    ec.cmd(0x00)?;
                 }
-                print!("*");
+                ec.cmd(0x00)?;
+
+                print!("Block {}: ", i);
+
+                for _j in 0..64 {
+                    for _k in 0..1024 {
+                        if let Some(b) = bytes.next() {
+                            ec.write(*b)?;
+                        } else {
+                            ec.write(0xFF)?;
+                        }
+                    }
+                    print!("*");
+                }
+
+                println!(" Done");
+            }
+        }
+
+        {
+            let mut bytes = data.iter();
+
+            ec.cmd(0x06)?;
+
+            print!("Boot: ");
+
+            for _i in 0..1024 {
+                if let Some(b) = bytes.next() {
+                    ec.write(*b)?;
+                } else {
+                    ec.write(0xFF)?;
+                }
             }
 
-            println!("");
+            println!("Done");
         }
 
         Ok(())
